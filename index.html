@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -78,7 +78,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/28/smallProblem/">一道算法题的思考</a>
+      <a class="article-title" href="/2017/09/28/smallProblem/">一道贪心算法题引起的思考</a>
     </h1>
   
 
@@ -86,15 +86,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="一道贪心算法题"><a href="#一道贪心算法题" class="headerlink" title="一道贪心算法题"></a>一道贪心算法题</h2><p>昨天帮实验室师兄一起做了一道算法题，感觉很迷的地方在于当时做出来了，testcase也全都过了<br>直到今天晚上才彻底把整个题目给思考清楚，因此写成这篇博客给大家分享一下我的心得。</p>
+        <p>昨天帮实验室师兄一起做了一道算法题，感觉很迷的地方在于当时做出来了，testcase也全都过了<br>直到今天晚上才彻底把整个题目给思考清楚，因此写成这篇博客分享一下我的心得。</p>
 <h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>题目是，小明的弟弟小红，在一条水平的数轴上画了很多平行于数轴的水平直线，小明很不喜欢，决定<br>清除所有的线段，有以下规则，当两条线段重合在一起的时候，只需要在重合的地方放上一颗“炸弹”就<br>能清除掉两条线段，问小明清除掉所有的线段需要多少次操作。</p>
-<p>分析：<br> 这道题今天我纠结的原因就是，有这样一种贪心策略，每次找寻重合线段数最多的区间，在这个区间<br> 上放上一颗炸弹就能最大化的去处边数。看似很对，但实际上隐藏着陷阱，考虑一下这种情况如下图<br> 所示<br><img src="/public/css/images/" title="[width] [height] [title text [alt text]]"><br> 因此我们实际的思路是针对每条线段的，可以这样思考，既然要消除所有的线段，那么就意味着，每条<br> 线段上的某一点都要有一个地方，放置炸弹，既然每条线段都要放，我们放置的地方为什么不尽量使得<br> 这一次炸掉的线段最大化呢？基于这种想法，我们首选对所有的线段进行排序，然后从最左边开始扫描<br> 不断记住重叠的区域，如果下一条线段同当前的重叠区域没有交集则需要放置的炸弹个数需要加1，且<br> 重置我们的重叠区域，如果重叠更新重叠区域继续寻找。</p>
+<p>分析：<br> 这道题今天我纠结的原因就是，有这样一种贪心策略，每次找寻重合线段数最多的区间，在这个区间<br> 上放上一颗炸弹就能最大化的去处边数。看似很对，但实际上隐藏着陷阱，考虑一下这种情况如下图<br> 所示<br> <img src="/images/counter.png" width="50%" height="50%" align="center/"><br> 如果按照重合最多的地方进行贪心，那么最开始的地方应该是红线的地方，重合度为4，整个需要的“炸弹”<br> 个数就是4，而我们可以轻易的看出最少需要的炸弹数可以达到3。</p>
+<p> 因此我们实际的思路是针对每条线段的，可以这样思考，既然要消除所有的线段，那么就意味着，每条<br> 线段上的某一点都要有一个地方，放置炸弹，既然每条线段都要放，我们放置的地方为什么不尽量使得<br> 这一次炸掉的线段最大化呢？基于这种想法，我们首选对所有的线段进行排序，然后从最左边开始扫描<br> 不断记住重叠的区域，如果下一条线段同当前的重叠区域没有交集则需要放置的炸弹个数需要加1，且<br> 重置我们的重叠区域，如果重叠更新重叠区域继续寻找。</p>
+<p> 以上反应的恰好是两种贪心策略，一种是从线段的角度去贪心，而找重合度最高的策略是从下面的坐标<br> 来贪心是想要尽可能在一个坐标消除更多的线段，我们讨论的核心还是线段本身，并没有规定在某个坐<br> 标上必须要放置或者不放置东西，因此这个角度的贪心是存在着问题的。贪心法也能玩出花样，以后遇<br> 到类似问题必须要好好分析，有理有据。</p>
 <p>问题的输入是两个ArrayList<integer> 分别代表线段的额开始位置以及终止位置，输入的顺序是乱序的，即线段可能是(-9.-8)这样<br>也可能会是(1,12),(-9.-8)这样的顺序因此，我建立了一个线段类，实现了Comparable接口方便对线段进行排序（这也是这个问题隐藏的坑）<br>基于以上的分析，我们有以下的代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> <span class="keyword">implements</span> <span class="title">Comparable</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> x;</div><div class="line">	<span class="keyword">int</span> y;</div><div class="line">	Node(<span class="keyword">int</span> x, <span class="keyword">int</span> y)&#123;</div><div class="line">		<span class="keyword">this</span>.x = x;</div><div class="line">		<span class="keyword">this</span>.y = y;</div><div class="line">	&#125;</div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Object o)</span> </span>&#123;</div><div class="line">		<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">		Node t = (Node) o;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.x -t.x ;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">puCatalyst</span><span class="params">(<span class="keyword">int</span> n, List&lt;Integer&gt; s, List&lt;Integer&gt; e)</span></span>&#123;</div><div class="line">	</div><div class="line">	Node[] ns = <span class="keyword">new</span> Node[n];</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.size();i++)&#123;</div><div class="line">		ns[i] = <span class="keyword">new</span> Node(Math.min(s.get(i),e.get(i)),Math.max(s.get(i),e.get(i)));</div><div class="line">	&#125;</div><div class="line">	Arrays.sort(ns);</div><div class="line">	<span class="keyword">int</span> count = <span class="number">1</span>;</div><div class="line">	Node temp = ns[<span class="number">0</span>];</div><div class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; ns.length;i++)&#123;</div><div class="line">		<span class="keyword">if</span>(ns[i].x &lt;= temp.y)&#123;</div><div class="line">			temp.x = ns[i].x;</div><div class="line">			temp.y = Math.min(temp.y, ns[i].y);</div><div class="line">		&#125;<span class="keyword">else</span>&#123;</div><div class="line">			count++;</div><div class="line">			temp = ns[i];</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> count;</div><div class="line">&#125;</div></pre></td></tr></table></figure></integer></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/09/28/smallProblem/" data-id="cj84o8yzl000326pxeaysdynm" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/09/28/smallProblem/" data-id="cj85a0evg0001g4pxqfpw1tlf" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -157,7 +159,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/09/01/complex/" data-id="cj84o8yz2000026pxjiqng5n6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/09/01/complex/" data-id="cj85a0ev90000g4px07mvcfvr" class="article-share-link">Partager</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算复杂性-答案/">计算复杂性 答案</a></li></ul>
@@ -203,7 +205,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2017/08/30/paper/" data-id="cj84o8yzb000126pxe3astlrp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2017/08/30/paper/" data-id="cj85a0evt0003g4pxnainb5fk" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -223,7 +225,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
+    <h3 class="widget-title">Mot-clés</h3>
     <div class="widget">
       <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/计算复杂性-答案/">计算复杂性 答案</a></li></ul>
     </div>
@@ -233,7 +235,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
+    <h3 class="widget-title">Nuage de mot-clés</h3>
     <div class="widget tagcloud">
       <a href="/tags/计算复杂性-答案/" style="font-size: 10px;">计算复杂性 答案</a>
     </div>
@@ -252,12 +254,12 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2017/09/28/smallProblem/">一道算法题的思考</a>
+            <a href="/2017/09/28/smallProblem/">一道贪心算法题引起的思考</a>
           </li>
         
           <li>
@@ -281,7 +283,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 travellerFang<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
